@@ -10,6 +10,7 @@ nav.get('https://buscacepinter.correios.com.br/app/endereco/index.php')
 pg.sleep(2)
 
 enderecos = {}
+dadosDataFrame = []
 
 
 q = int(input("Quantos CPFs deseja pesquisar? "))
@@ -50,10 +51,18 @@ for counter in enderecos.values():
     endereco = ""
     for L in tabela.find_elements(By.TAG_NAME, 'tr'):
         for C in L.find_elements(By.TAG_NAME, 'td'):
-
+            
             endereco = f'{endereco}; {C.text}'
-
+    dadosDataFrame.append(endereco)
     print(endereco)
 
+excel = pd.ExcelWriter('buscaCep.xlsx', engine='xlsxwriter')
+excel._save()
+
+dataFrame = pd.DataFrame(dadosDataFrame, columns=[';Rua;Bairro;Cidade;CEP'])
+excel = pd.ExcelWriter('buscaCep.xlsx', engine='xlsxwriter')
+
+dataFrame.to_excel(excel, sheet_name='Dados', index=False)
+excel._save()
 
 print("Pronto")
